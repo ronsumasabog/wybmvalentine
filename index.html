@@ -1,0 +1,682 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Valentine?</title>
+  <style>
+    :root {
+      --pink: #ff9ac6;
+      --deep-pink: #ff5a9e;
+      --red: #ff3b5c;
+      --soft-red: #ff6b7f;
+      --white: #fff7fb;
+      --shadow: rgba(255, 59, 92, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      background:
+        linear-gradient(160deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 240, 246, 0.25) 40%, rgba(255, 224, 239, 0.35) 100%),
+        url("photo/Ron.png") center / cover no-repeat;
+      color: #a3163a;
+      overflow: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 154, 198, 0.45), rgba(255, 154, 198, 0));
+      filter: blur(2px);
+      z-index: 0;
+      animation: floatBlob 14s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    body::before {
+      top: -120px;
+      left: -80px;
+    }
+
+    body::after {
+      bottom: -160px;
+      right: -120px;
+      animation-duration: 18s;
+    }
+
+    .loader {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: #fff0f6;
+      z-index: 5;
+      transition: opacity 0.7s ease;
+    }
+
+    .loader-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: #a3163a;
+      padding: 20px 28px;
+      background: rgba(255, 247, 251, 0.85);
+      border-radius: 20px;
+      border: 2px solid #ffd1e6;
+      box-shadow: 0 16px 40px rgba(255, 90, 158, 0.2);
+      backdrop-filter: blur(6px);
+    }
+
+    .loader-title {
+      margin: 0 0 8px;
+      font-size: clamp(1.2rem, 3vw, 1.6rem);
+    }
+
+    .loader-sub {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .loader-dots {
+      display: inline-flex;
+      gap: 6px;
+      margin-top: 12px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .loader-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--deep-pink), var(--red));
+      animation: pulseDot 1s ease-in-out infinite;
+      box-shadow: 0 8px 16px rgba(255, 90, 158, 0.2);
+    }
+
+    .loader-dots span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .loader-dots span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    .slideshow,
+    .card-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      animation: fadeSlide var(--cycle, 12s) infinite;
+      filter: saturate(1.05) brightness(0.95);
+      transform: scale(1.05);
+    }
+
+    .card {
+      width: min(560px, 92vw);
+      border-radius: 24px;
+      padding: 0;
+      text-align: center;
+      box-shadow: 0 20px 60px var(--shadow);
+      border: 2px solid #ffd1e6;
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      background: rgba(255, 247, 251, 0.75);
+      backdrop-filter: blur(10px);
+      display: none;
+      animation: cardIn 0.8s ease forwards;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 235, 243, 0.9) 100%);
+      z-index: 1;
+    }
+
+    .card-content {
+      position: relative;
+      z-index: 2;
+      padding: 32px 24px 28px;
+    }
+
+    h1 {
+      margin: 0 0 16px;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+    }
+
+    p {
+      margin: 8px 0 0;
+      font-size: clamp(1rem, 2.4vw, 1.2rem);
+      min-height: 1.5em;
+    }
+
+    .gif-wrap {
+      width: min(240px, 70vw);
+      height: min(240px, 70vw);
+      margin: 0 auto 16px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(255, 90, 158, 0.2);
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    .gif-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    .yes-gif {
+      display: none;
+      margin: 12px auto 0;
+    }
+
+    .message-big {
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 700;
+      color: #c2184a;
+      text-shadow: 0 8px 18px rgba(255, 90, 158, 0.25);
+    }
+
+    .buttons {
+      margin-top: 24px;
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative;
+      min-height: 72px; /* room for moving button */
+    }
+
+    button {
+      border: none;
+      padding: 12px 22px;
+      border-radius: 999px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+      box-shadow: 0 10px 24px rgba(255, 90, 158, 0.25);
+      user-select: none;
+    }
+
+    #yesBtn {
+      background: linear-gradient(135deg, var(--deep-pink), var(--red));
+      color: white;
+      position: relative;
+      transition: transform 0.25s ease, box-shadow 0.2s ease;
+    }
+
+    #noBtn {
+      background: white;
+      color: #d6455d;
+      border: 2px solid #ffc2d9;
+      position: absolute; /* allows free movement */
+      left: 0;
+      top: 0;
+      transform: translate(0, 0);
+      transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    button:active {
+      transform: scale(0.96);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Message celebration animation */
+    .message-pop span {
+      display: inline-block;
+      transform-origin: center bottom;
+      animation: popIn 0.7s ease forwards;
+    }
+
+    .message-pop span.delay-1 {
+      animation-delay: 0.15s;
+    }
+
+    .message-pop span.delay-2 {
+      animation-delay: 0.3s;
+    }
+
+    .message-pop span.delay-3 {
+      animation-delay: 0.45s;
+    }
+
+    @keyframes popIn {
+      0% {
+        transform: scale(0.85);
+        opacity: 0.6;
+      }
+      60% {
+        transform: scale(1.35);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1.1);
+      }
+    }
+
+    @keyframes pulseDot {
+      0%, 100% {
+        transform: scale(0.9);
+        opacity: 0.6;
+      }
+      50% {
+        transform: scale(1.2);
+        opacity: 1;
+      }
+    }
+
+    /* Floating hearts for the celebration */
+    .heart {
+      position: fixed;
+      font-size: 20px;
+      animation: floatUp 2s ease-out forwards;
+      pointer-events: none;
+      filter: drop-shadow(0 6px 10px rgba(255, 59, 92, 0.35));
+      z-index: 6;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(0.9);
+        opacity: 0.9;
+      }
+      50% {
+        transform: translateY(-80px) scale(1.15);
+      }
+      100% {
+        transform: translateY(-220px) scale(1.25);
+        opacity: 0;
+      }
+    }
+
+    @keyframes fadeSlide {
+      0% { opacity: 0; }
+      8% { opacity: 1; }
+      30% { opacity: 1; }
+      38% { opacity: 0; }
+      100% { opacity: 0; }
+    }
+
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes floatBlob {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.7;
+      }
+      50% {
+        transform: translate(40px, 30px) scale(1.08);
+        opacity: 0.9;
+      }
+      100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.7;
+      }
+    }
+
+    .is-ready .loader {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .is-ready .card {
+      display: block;
+    }
+
+    @media (max-width: 520px) {
+      .card-content {
+        padding: 28px 18px 24px;
+      }
+
+      .buttons {
+        min-height: 90px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="loader" id="loader" aria-live="polite">
+    <div class="slideshow" id="loaderSlides" aria-hidden="true"></div>
+    <div class="loader-content">
+      <h2 class="loader-title">Loading the love…</h2>
+      <p class="loader-sub">Just a second 💞</p>
+      <p class="loader-sub">Please max the volume on your speaker or headphones 🔊</p>
+      <div class="loader-dots" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <main class="card" id="card" aria-live="polite">
+    <div class="card-bg" id="cardBg" aria-hidden="true"></div>
+    <div class="card-content">
+      <div class="gif-wrap" id="heroGifWrap" aria-hidden="true">
+        <iframe
+          title="Cute cat with hearts"
+          src="https://tenor.com/embed/25782905"
+          loading="lazy"
+        ></iframe>
+      </div>
+      <h1>Will you be my Valentine? 💖</h1>
+      <p id="message">Pagnapindot mo yong no isang milyon 😇</p>
+
+      <div class="gif-wrap yes-gif" id="yesGifWrap" aria-hidden="true">
+        <iframe
+          title="Happy cat celebration"
+          src="https://tenor.com/embed/16831149426068931430"
+          loading="lazy"
+        ></iframe>
+      </div>
+
+      <div class="buttons" id="buttonArea">
+        <button id="yesBtn" type="button">Yes 💘</button>
+        <button id="noBtn" type="button">No 🙃</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Music: replace file names with your actual audio files in the project folder. -->
+  <audio id="bgMusic" src="valentine.mp3" loop preload="auto"></audio>
+  <audio id="yesMusic" src="endinglast.m4a" preload="auto"></audio>
+
+  <script>
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const message = document.getElementById("message");
+    const buttonArea = document.getElementById("buttonArea");
+    const loader = document.getElementById("loader");
+    const loaderSlides = document.getElementById("loaderSlides");
+    const cardBg = document.getElementById("cardBg");
+    const yesGifWrap = document.getElementById("yesGifWrap");
+    const heroGifWrap = document.getElementById("heroGifWrap");
+    const bgMusic = document.getElementById("bgMusic");
+    const yesMusic = document.getElementById("yesMusic");
+    let hasAccepted = false;
+    let chaseTimeoutId = null;
+    let chaseMessageShown = false;
+    let magnetActive = false;
+    let magnetTimerId = null;
+    let yesBase = null;
+    let musicStarted = false;
+
+    const images = [
+      "photo/Ron 3.png",
+      "photo/Ron.png",
+      "photo/Ron2.png",
+    ];
+
+    // Build slides for the loader and the card background.
+    function buildSlides(container) {
+      images.forEach((src, index) => {
+        const slide = document.createElement("div");
+        slide.className = "slide";
+        slide.style.backgroundImage = `url('${src}')`;
+        slide.style.animationDelay = `${index * 2.4}s`;
+        container.appendChild(slide);
+      });
+
+      const cycle = `${images.length * 2.4}s`;
+      container.style.setProperty("--cycle", cycle);
+    }
+
+    buildSlides(loaderSlides);
+    buildSlides(cardBg);
+
+    function recordYesBase() {
+      const areaRect = buttonArea.getBoundingClientRect();
+      const yesRect = yesBtn.getBoundingClientRect();
+      yesBase = {
+        x: yesRect.left - areaRect.left,
+        y: yesRect.top - areaRect.top
+      };
+    }
+
+    // Preload all images so the loader feels smooth.
+    function preloadImages(list) {
+      return Promise.all(
+        list.map(
+          (src) =>
+            new Promise((resolve) => {
+              const img = new Image();
+              img.onload = () => resolve();
+              img.onerror = () => resolve();
+              img.src = src;
+            })
+        )
+      );
+    }
+
+    const loaderStart = Date.now();
+
+    preloadImages(images).then(() => {
+      const elapsed = Date.now() - loaderStart;
+      const minDelay = 5000;
+      const remaining = Math.max(0, minDelay - elapsed);
+
+      setTimeout(() => {
+        document.body.classList.add("is-ready");
+        // Remove loader from the DOM after fade-out to keep the page tidy.
+        setTimeout(() => loader.remove(), 800);
+        recordYesBase();
+        magnetTimerId = setTimeout(() => {
+          if (!hasAccepted) {
+            magnetActive = true;
+          }
+        }, 10000);
+      }, remaining);
+    });
+
+    function startBackgroundMusic() {
+      if (musicStarted) return;
+      musicStarted = true;
+      if (bgMusic && bgMusic.src) {
+        bgMusic.volume = 0.5;
+        bgMusic.play().catch(() => {
+          // Autoplay may be blocked; it will retry on the next user action.
+          musicStarted = false;
+        });
+      }
+    }
+
+    // Place the "No" button within the button area bounds.
+    function moveNoButton(preferredX, preferredY) {
+      const areaRect = buttonArea.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+
+      const maxX = Math.max(0, areaRect.width - btnRect.width);
+      const maxY = Math.max(0, areaRect.height - btnRect.height);
+
+      let x = Math.random() * maxX;
+      let y = Math.random() * maxY;
+
+      if (typeof preferredX === "number" && typeof preferredY === "number") {
+        // Try to pick a position far away from the cursor.
+        const minDistance = 160;
+        let attempts = 0;
+        while (attempts < 8) {
+          const testX = Math.random() * maxX;
+          const testY = Math.random() * maxY;
+          const dx = preferredX - (areaRect.left + testX + btnRect.width / 2);
+          const dy = preferredY - (areaRect.top + testY + btnRect.height / 2);
+          if (Math.hypot(dx, dy) > minDistance) {
+            x = testX;
+            y = testY;
+            break;
+          }
+          attempts++;
+        }
+      }
+
+      noBtn.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    // Create a handful of floating hearts for a quick celebration.
+    function celebrateHearts() {
+      const heartCount = 18;
+      for (let i = 0; i < heartCount; i++) {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.textContent = Math.random() > 0.5 ? "💖" : "💘";
+
+        const x = Math.random() * window.innerWidth;
+        const y = window.innerHeight - 40;
+        heart.style.left = `${x}px`;
+        heart.style.top = `${y}px`;
+        heart.style.animationDelay = `${Math.random() * 0.5}s`;
+        heart.style.fontSize = `${16 + Math.random() * 18}px`;
+
+        document.body.appendChild(heart);
+        heart.addEventListener("animationend", () => heart.remove());
+      }
+    }
+
+    yesBtn.addEventListener("click", () => {
+      hasAccepted = true;
+      magnetActive = false;
+      if (magnetTimerId) {
+        clearTimeout(magnetTimerId);
+      }
+      if (heroGifWrap) {
+        heroGifWrap.style.display = "none";
+      }
+      if (bgMusic) {
+        bgMusic.pause();
+        bgMusic.currentTime = 0;
+      }
+      if (yesMusic && yesMusic.src) {
+        yesMusic.currentTime = 0;
+        yesMusic.play().catch(() => {});
+      }
+      message.classList.remove("message-big");
+      message.classList.remove("message-pop");
+      // Force reflow so the animation can replay on repeated clicks (if any).
+      void message.offsetWidth;
+      message.classList.add("message-pop");
+      message.innerHTML = `
+        <span>Really…</span>
+        <span class="delay-1">really…</span>
+        <span class="delay-2">YOU SAID YES!</span>
+        <span class="delay-3">💞</span>
+      `;
+      celebrateHearts();
+      yesGifWrap.style.display = "block";
+      yesBtn.disabled = true;
+      noBtn.disabled = true;
+    });
+
+    // Make "No" run away smoothly when the pointer gets close.
+    let rafId = null;
+    function noteChase() {
+      if (hasAccepted || chaseMessageShown) return;
+      if (chaseTimeoutId) return;
+      chaseTimeoutId = setTimeout(() => {
+        if (hasAccepted) return;
+        chaseMessageShown = true;
+        message.classList.add("message-big");
+        message.classList.remove("message-pop");
+        void message.offsetWidth;
+        message.classList.add("message-pop");
+        message.textContent = "Really? Just click Yes 💘";
+      }, 5000);
+    }
+
+    function handlePointerMove(event) {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        startBackgroundMusic();
+        noteChase();
+        moveNoButton(event.clientX, event.clientY);
+        if (magnetActive && yesBase) {
+          const areaRect = buttonArea.getBoundingClientRect();
+          const yesRect = yesBtn.getBoundingClientRect();
+          const maxX = Math.max(0, areaRect.width - yesRect.width);
+          const maxY = Math.max(0, areaRect.height - yesRect.height);
+
+          const targetX = Math.min(Math.max(0, event.clientX - areaRect.left - yesRect.width / 2), maxX);
+          const targetY = Math.min(Math.max(0, event.clientY - areaRect.top - yesRect.height / 2), maxY);
+
+          const offsetX = targetX - yesBase.x;
+          const offsetY = targetY - yesBase.y;
+          yesBtn.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+        }
+      });
+    }
+
+    buttonArea.addEventListener("mousemove", handlePointerMove);
+    buttonArea.addEventListener("pointermove", handlePointerMove);
+    buttonArea.addEventListener("click", startBackgroundMusic, { once: true });
+    document.addEventListener("pointerdown", startBackgroundMusic, { once: true });
+    document.addEventListener("keydown", startBackgroundMusic, { once: true });
+
+    // Extra safety if the user still tries to click it.
+    noBtn.addEventListener("mouseenter", (event) => {
+      noteChase();
+      moveNoButton(event.clientX, event.clientY);
+    });
+    noBtn.addEventListener("click", (event) => {
+      noteChase();
+      moveNoButton(event.clientX, event.clientY);
+    });
+    noBtn.addEventListener("touchstart", (event) => {
+      noteChase();
+      if (event.touches && event.touches[0]) {
+        moveNoButton(event.touches[0].clientX, event.touches[0].clientY);
+      } else {
+        moveNoButton();
+      }
+    }, { passive: true });
+
+    // Initial placement so it doesn't overlap in some layouts.
+    moveNoButton();
+    window.addEventListener("resize", () => {
+      recordYesBase();
+      if (!magnetActive) {
+        yesBtn.style.transform = "translate(0, 0)";
+      }
+    });
+  </script>
+</body>
+</html>
+
